@@ -3,13 +3,17 @@ const crypto = require("crypto");
 const {
     createUser,
     findUser,
-    checkUser
+    checkUser,
+    updateUser
 } = require("../models/userModel");
 
 const hashPassword = (password, salt) => {
     return crypto.scryptSync(password, salt, 64).toString("hex");
 };
-// Signup 
+
+
+// Signup
+
 const signup = async (req, res) => {
     try {
         const {
@@ -52,6 +56,8 @@ const signup = async (req, res) => {
         });
 
     } catch (err) {
+        console.log(err.message);
+
         res.status(500).json({
             message: "Server error"
         });
@@ -88,9 +94,17 @@ const login = async (req, res) => {
             });
         }
 
+        const token = crypto.randomBytes(32).toString("hex");
+
+        await updateUser(user.email, {
+            token: token
+        });
+
         res.status(200).json({
             message: "Login successful",
+            token: token,
             user: {
+                id: user._id,
                 name: user.name,
                 email: user.email,
                 username: user.username
@@ -98,10 +112,15 @@ const login = async (req, res) => {
         });
 
     } catch (err) {
+        console.log(err.message);
+
         res.status(500).json({
             message: "Server error"
         });
     }
 };
 
-module.exports = { signup, login };
+module.exports = {
+    signup,
+    login
+};

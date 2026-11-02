@@ -52,7 +52,6 @@ const validateSignup = (req, res, next) => {
 
     next();
 };
-
 const validateLogin = (req, res, next) => {
     const { email, username, password } = req.body;
 

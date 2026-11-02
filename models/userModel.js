@@ -21,4 +21,17 @@ const checkUser = async (email, username) => {
         ]
     });
 };
-module.exports = { createUser, findUser, checkUser };
+
+const updateUser = async (email, data) => {
+    return await getDB().collection("users").updateOne(
+        { email },
+        { $set: data }
+    );
+};
+
+module.exports = {
+    createUser,
+    findUser,
+    checkUser,
+    updateUser
+};
